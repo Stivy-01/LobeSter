@@ -1,0 +1,108 @@
+﻿# Gate A Tester Onboarding (Single Page)
+
+Goal: prove the core money path works end-to-end:
+`install -> add one skill -> set engram -> verify generated config`.
+
+Target time: **15 minutes max**.  
+If you are blocked for more than 3 minutes on any step, stop and report.
+
+## 0) Prerequisites (1 minute)
+
+- Node.js 20+
+- pnpm 9+
+- PowerShell or terminal
+
+From repo root:
+
+```powershell
+pnpm install
+pnpm build
+```
+
+## 1) Start fresh local state (1 minute)
+
+Create a minimal OpenClaw base config:
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\\.openclaw" | Out-Null
+'{"skills":{"entries":{}}}' | Set-Content "$HOME\\.openclaw\\openclaw.json" -Encoding Ascii
+```
+
+Initialize LobeSter:
+
+```powershell
+pnpm lobe -- init
+pnpm lobe -- start
+```
+
+Leave the server terminal running.
+
+## 2) Add one skill (3 minutes)
+
+Open a second terminal. Create a sample skill folder:
+
+```powershell
+$skillPath = "$env:TEMP\\lobester-sample-skill"
+New-Item -ItemType Directory -Force $skillPath | Out-Null
+@"
+{
+  "name": "Sample Skill",
+  "openclawKey": "sample_skill",
+  "version": "0.1.0"
+}
+"@ | Set-Content "$skillPath\\lobester.json" -Encoding Ascii
+```
+
+Install it through local API:
+
+```powershell
+$install = Invoke-RestMethod -Uri "http://127.0.0.1:3210/api/skills/install" -Method POST -ContentType "application/json" -Body (@{source=@{kind="local";ref=$skillPath}} | ConvertTo-Json -Depth 5)
+$install.skill.id
+```
+
+Copy the printed `skill.id`.
+
+## 3) Create engram and set (3 minutes)
+
+```powershell
+$engram = Invoke-RestMethod -Uri "http://127.0.0.1:3210/api/presets" -Method POST -ContentType "application/json" -Body (@{name="gate-a";skillIds=@($install.skill.id)} | ConvertTo-Json -Depth 5)
+$apply = Invoke-RestMethod -Uri "http://127.0.0.1:3210/api/openclaw/applyPreset" -Method POST -ContentType "application/json" -Body (@{presetRef=$engram.preset.id} | ConvertTo-Json -Depth 5)
+$apply.generatedConfigPath
+```
+
+## 4) Verify config output (2 minutes)
+
+```powershell
+Test-Path $apply.generatedConfigPath
+Get-Content $apply.generatedConfigPath | Select-Object -First 20
+```
+
+Success criteria:
+
+- `Test-Path` returns `True`
+- Generated config includes your installed skill entry (`sample_skill`)
+- No blocking error from `/api/openclaw/applyPreset`
+
+## 5) Report back (2 minutes)
+
+Send this exact summary:
+
+- Total time (minutes)
+- First blocker (if any)
+- Did apply succeed? (`yes/no`)
+- Generated config path
+- 1 confusing step
+
+---
+
+## Time Check (author run)
+
+I ran this flow in a fresh temp state from repo root (including `pnpm install` + `pnpm build`) and measured:
+
+- **33.01 seconds** scripted end-to-end
+- **0.55 minutes**
+
+Human/manual execution should still be comfortably below the 15-minute gate.
+
+
+

@@ -1,0 +1,25 @@
+{
+  "name": "lobester",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "lobe": "node apps/connector/dist/cli.js",
+    "lobester": "pnpm run lobe --",
+    "quickstart": "node scripts/quickstart.mjs",
+    "quickstart:fast": "node scripts/quickstart.mjs --skip-install --skip-build",
+    "quickstart:cold": "node scripts/quickstart.mjs --force-install --force-build",
+    "build": "pnpm run build:shared && pnpm run build:ui && pnpm run build:connector && pnpm run build:cloud",
+    "build:shared": "pnpm --filter @lobester/shared build",
+    "build:ui": "pnpm --filter @lobester/ui build",
+    "build:connector": "pnpm --filter @lobester/connector build",
+    "build:cloud": "pnpm --filter @lobester/cloud build",
+    "fake-openclaw:validate": "node apps/fake-openclaw/src/cli.mjs validate",
+    "fake-openclaw:start": "node apps/fake-openclaw/src/cli.mjs start",
+    "smoke:fake-openclaw": "pnpm run build:shared && pnpm run build:connector && node apps/fake-openclaw/scripts/smoke-with-connector.mjs",
+    "lint": "pnpm -r lint",
+    "test": "pnpm --filter @lobester/connector test && pnpm --filter @lobester/cloud test",
+    "smoke:apply": "pnpm --filter @lobester/connector smoke:apply"
+  }
+}
+

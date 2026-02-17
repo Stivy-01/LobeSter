@@ -1,0 +1,30 @@
+{
+  "name": "@lobester/connector",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "lobe": "dist/cli.js",
+    "lobester": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx watch src/cli.ts start",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "tsx --test src/**/*.test.ts",
+    "smoke:apply": "node scripts/smoke-apply.mjs"
+  },
+  "dependencies": {
+    "fastify": "^5.0.0",
+    "@fastify/static": "^8.0.0",
+    "commander": "^12.0.0",
+    "nanoid": "^5.0.0",
+    "tar": "^7.4.3",
+    "@lobester/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0"
+  }
+}
+

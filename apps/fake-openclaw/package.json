@@ -1,0 +1,10 @@
+{
+  "name": "@lobester/fake-openclaw",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node src/cli.mjs validate",
+    "start": "node src/cli.mjs start",
+    "smoke": "node scripts/smoke-with-connector.mjs"
+  }
+}

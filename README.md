@@ -1,5 +1,7 @@
 # LobeSter
 
+![LobeSter logo](apps/assets/lobester_logo.png)
+
 **LobeSter is the local control panel for OpenClaw skills.**  
 Deterministic. Non-destructive. CLI-first.  
 Install, group, activate, and safely apply your engrams without breaking your base config.

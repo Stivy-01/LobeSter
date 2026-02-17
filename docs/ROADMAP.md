@@ -6,7 +6,7 @@
 
 - `lobe init`
 - `lobe doctor` (checks paths)
-- `lobe set --engram <id>` generates config
+- `lobe set --engram <engramref>` generates config
 
 ### Local dashboard
 

@@ -51,6 +51,8 @@ On each engram is set, it writes:
 
 You point OpenClaw to the generated file via `OPENCLAW_CONFIG_PATH`.
 
+![UI snapshot](apps/assets/screenshot.png)
+
 ## What LobeSter Is Not
 
 - Not an agent runtime

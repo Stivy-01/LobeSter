@@ -1,7 +1,32 @@
 {
   "name": "lobester",
-  "private": true,
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "bin": {
+    "lobe": "bin/lobe.mjs",
+    "lobester": "bin/lobe.mjs"
+  },
+  "files": [
+    "bin/lobe.mjs",
+    "apps/connector/dist/cli.js",
+    "apps/connector/dist/server.js",
+    "apps/connector/dist/routes/*.js",
+    "apps/connector/dist/services/*.js",
+    "apps/ui/out/",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@9.0.0",
+  "dependencies": {
+    "@fastify/static": "^8.0.0",
+    "commander": "^12.0.0",
+    "fastify": "^5.0.0",
+    "nanoid": "^5.0.0",
+    "tar": "^7.4.3"
+  },
   "scripts": {
     "dev": "pnpm -r dev",
     "lobe": "node apps/connector/dist/cli.js",
@@ -19,7 +44,8 @@
     "smoke:fake-openclaw": "pnpm run build:shared && pnpm run build:connector && node apps/fake-openclaw/scripts/smoke-with-connector.mjs",
     "lint": "pnpm -r lint",
     "test": "pnpm --filter @lobester/connector test && pnpm --filter @lobester/cloud test",
-    "smoke:apply": "pnpm --filter @lobester/connector smoke:apply"
+    "smoke:apply": "pnpm --filter @lobester/connector smoke:apply",
+    "prepack": "pnpm run build:shared && pnpm run build:connector && pnpm run build:ui"
   }
 }
 

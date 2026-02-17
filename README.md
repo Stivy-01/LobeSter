@@ -61,6 +61,20 @@ You point OpenClaw to the generated file via `OPENCLAW_CONFIG_PATH`.
 
 ## Quick Start
 
+Prefer a walkthrough first? Watch the run/setup demo:
+
+<video src="apps/assets/Lobester-demo.mp4" controls width="960"></video>
+
+If your Markdown viewer does not render embedded video, open `apps/assets/Lobester-demo.mp4` directly.
+
+Install from npm (CLI + local UI):
+
+```bash
+npm install -g lobester
+lobe init
+lobe start
+```
+
 Prerequisites:
 
 - Node.js 20+
@@ -134,3 +148,6 @@ Local connector:
 - `OPENCLAW_CONFIG_PATH`
 - `LOBESTER_CLOUD_URL`
 
+## License
+
+Apache License 2.0. See `LICENSE.md`.

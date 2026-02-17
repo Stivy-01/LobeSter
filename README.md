@@ -38,7 +38,6 @@ LobeSter introduces deterministic loadouts called **engrams** - reproducible ski
 - Deterministic output
 - Explicit conflict reporting
 - No silent mutation
-- Cloud is optional
 
 ## How It Works
 
@@ -58,7 +57,7 @@ You point OpenClaw to the generated file via `OPENCLAW_CONFIG_PATH`.
 - Not an agent runtime
 - Not a model host
 - Not a cloud execution service
-- Not a marketplace (yet)
+- Not a skill marketplace
 
 ## Quick Start
 
@@ -135,29 +134,3 @@ Local connector:
 - `OPENCLAW_CONFIG_PATH`
 - `LOBESTER_CLOUD_URL`
 
-Cloud app:
-
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `LICENSE_TOKEN_PEPPER`
-- `POLAR_WEBHOOK_ENFORCE_SIGNATURE`
-- `POLAR_WEBHOOK_SECRET`
-- `POLAR_PRICE_ID_MONTHLY`
-- `POLAR_PRICE_ID_YEARLY`
-
-## Optional Cloud Licensing
-
-Cloud licensing is optional and sits outside the core local workflow.
-
-- Local engram management works without cloud
-- Connector can validate a local token when `LOBESTER_CLOUD_URL` is set
-- Cloud API routes live in `apps/cloud/src/app/api`
-
-
-## Engineering Docs
-
-- `docs/README_ENGINEERING.md`
-- `docs/ROADMAP.md`
-- `docs/RELEASE_CHECKLIST.md`

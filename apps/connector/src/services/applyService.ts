@@ -1,16 +1,13 @@
-﻿import type {
+import type {
   ApplyConflict,
   ApplyPresetResponse,
   Run,
 } from "@lobester/shared";
-import { MergeEngine } from "./mergeEngine.js";
-import { OpenClawConfigReader } from "./openclawConfig.js";
-import { paths } from "./paths.js";
+import { createLoadoutAdapter } from "./adapters/registry.js";
+import type { LoadoutAdapter } from "./adapters/types.js";
 import { PresetStore } from "./presetStore.js";
 import { RunStore } from "./runStore.js";
 import { SkillStore } from "./skillStore.js";
-import { WrapperSnippets } from "./wrapperSnippets.js";
-import { writeFileAtomic } from "./jsonStore.js";
 
 export class ApplyServiceError extends Error {
   constructor(
@@ -27,9 +24,10 @@ export class ApplyService {
   private readonly presetStore = new PresetStore();
   private readonly skillStore = new SkillStore();
   private readonly runStore = new RunStore();
-  private readonly configReader = new OpenClawConfigReader();
-  private readonly mergeEngine = new MergeEngine();
-  private readonly wrappers = new WrapperSnippets();
+
+  constructor(
+    private readonly adapter: LoadoutAdapter = createLoadoutAdapter(),
+  ) {}
 
   async applyPreset(presetRef: string): Promise<{
     response: ApplyPresetResponse;
@@ -59,9 +57,6 @@ export class ApplyService {
     await this.runStore.update(run.id, { status: "running" });
 
     try {
-      const { baseConfigPath, baseConfig } =
-        await this.configReader.readBaseConfig();
-
       const allSkills = await this.skillStore.list();
       const skillById = new Map(allSkills.map((s) => [s.id, s]));
       const selected = [];
@@ -81,49 +76,19 @@ export class ApplyService {
         selected.push(skill);
       }
 
-      const merge = this.mergeEngine.build({
-        baseConfig,
+      const response = await this.adapter.applyLoadout({
         skills: selected,
-        managedSkillsDir: paths.skillsDir,
+        missingSkillConflicts,
       });
-
-      await paths.ensureRuntimeDirs();
-      await writeFileAtomic(
-        paths.overlayPath,
-        JSON.stringify(merge.overlayConfig, null, 2),
-      );
-      await writeFileAtomic(
-        paths.generatedConfigPath,
-        JSON.stringify(merge.generatedConfig, null, 2),
-      );
-
-      const conflicts = [
-        ...missingSkillConflicts,
-        ...merge.conflicts,
-      ];
-      const response: ApplyPresetResponse = {
-        ok: true,
-        baseConfigPath,
-        generatedConfigPath: paths.generatedConfigPath,
-        overlayPath: paths.overlayPath,
-        managedSkillsDir: paths.skillsDir,
-        openclawEnvVar: {
-          key: "OPENCLAW_CONFIG_PATH",
-          value: paths.generatedConfigPath,
-        },
-        wrapperSnippets: this.wrappers.build(
-          paths.generatedConfigPath,
-        ),
-        conflicts,
-      };
 
       await this.runStore.update(run.id, {
         status: "done",
         outputMarkdown: [
           `Applied preset: ${preset.name}`,
-          `Generated config: ${paths.generatedConfigPath}`,
-          `Overlay: ${paths.overlayPath}`,
-          `Conflicts: ${conflicts.length}`,
+          `Adapter: ${this.adapter.id}`,
+          `Generated config: ${response.generatedConfigPath}`,
+          `Overlay: ${response.overlayPath}`,
+          `Conflicts: ${response.conflicts.length}`,
         ].join("\n"),
       });
 
@@ -147,4 +112,3 @@ export class ApplyService {
     }
   }
 }
-

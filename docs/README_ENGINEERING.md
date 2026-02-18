@@ -55,6 +55,17 @@ Canonical naming in user-facing surfaces:
 
 Internal API/storage still uses `preset` in several contracts for compatibility.
 
+## Adapter Architecture
+
+- Core apply orchestration lives in `ApplyService`
+- Ecosystem-specific behavior is behind `LoadoutAdapter`
+- Current adapter: `OpenClawAdapter`
+- Adapter registry: `apps/connector/src/services/adapters/registry.ts`
+
+Selection is controlled by:
+
+- `LOBESTER_ADAPTER` (defaults to `openclaw`)
+
 Legacy naming removed from code paths:
 
 - `SKILLUI_HOME` fallback removed (use `LOBESTER_HOME`)

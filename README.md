@@ -147,6 +147,7 @@ Local connector:
 - `LOBESTER_HOME`
 - `OPENCLAW_CONFIG_PATH`
 - `LOBESTER_CLOUD_URL`
+- `LOBESTER_ADAPTER` (default: `openclaw`)
 
 ## License
 

@@ -50,6 +50,15 @@ work. This is the same pattern used by many dev tools.
 - Stores local state in JSON/SQLite
 - Authenticates to cloud via device token
 
+**Adapter Boundary (v1):**
+
+- Connector now resolves a loadout adapter through
+  `services/adapters/registry.ts`
+- Current shipped adapter: `openclaw`
+- Core orchestration (`ApplyService`) is adapter-agnostic
+- Future ecosystems can be added by implementing the adapter
+  interface in `services/adapters/types.ts` and registering it
+
 ### C) Local UI â€” `apps/ui`
 
 - Next.js compiled to **static export**
